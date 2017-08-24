@@ -65,7 +65,6 @@ int main(void)
 		Delay_ms(1000);
 		Delay_ms(1000);
 		*************************/
-		
 			if(1==keyBit)        //定时读取按键
 			{
 					PS2_DataKey();	 //手柄按键捕获处理
