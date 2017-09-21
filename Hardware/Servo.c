@@ -23,12 +23,12 @@ void SendCmd(u8*,u8);
 void ClawOpen()
 {
 	SendCmd(DM_Action1,5);
-	Delay_ms(100);
+	Delay_ms(1000);
 }
 void ClawClose()
 {
 	SendCmd(DM_Action0,5);
-	Delay_ms(100);
+	Delay_ms(1000);
 }
 void ServoStart()
 {

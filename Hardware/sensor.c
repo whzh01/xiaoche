@@ -6,10 +6,9 @@ u8 filter(u8);
 void SensorConfig()
 {
 	GPIO_InitTypeDef 	GPIO_InitStructure;
-	GPIO_InitStructure.GPIO_Pin = SENSORIN1 | SENSORIN2;
+	GPIO_InitStructure.GPIO_Pin = SENSORIN1 | SENSORIN2 |SENSORIN3 |SENSORIN4 ;
 	GPIO_InitStructure.GPIO_Mode= GPIO_Mode_IN_FLOATING;
 	GPIO_Init(SENSORIO,&GPIO_InitStructure);
-	
 	
 }
 /***************************************************

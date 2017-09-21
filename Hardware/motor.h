@@ -5,9 +5,11 @@
  extern "C" {
 #endif
 
+#define DEV 35
+
 /* Includes ------------------------------------------------------------------*/
 #include "userconfig.h"
-	 
+	
 void MotorConfig(void);	 
 void MoveMotorForward(void); 
 void MoveMotorBack(void);
@@ -15,8 +17,12 @@ void MoveMotorStop(void);
 void PullMotorForward(void);
 void PullMotorBack(void);
 void PullMotorStop(void);
+void RollMotorForward(void);
+void RollMotorBack(void);
+void RollMotorStop(void);
 void SetPullMotorSpeed(u16 speed);
 void SetMoveMotorSpeed(u16 speed);
+void SetRollMotorSpeed(u16 speed);
 	 
 	 
 	 

@@ -37,18 +37,36 @@
 #define MOTORIN4				GPIO_Pin_11
 #define MOTORIN5				GPIO_Pin_6
 #define MOTORIN6				GPIO_Pin_7
-#define PWMTIMIO				GPIOC
-#define PWMTIMIO1				GPIO_Pin_6
-#define PWMTIMIO2				GPIO_Pin_7
-#define PWMTIMIO3				GPIO_Pin_8
-#define SENSORIO				GPIOB
-#define SENSORIN1				GPIO_Pin_0
-#define SENSORIN2				GPIO_Pin_1
 #define CONTROLIO				GPIOB
 #define CONTROLCS				GPIO_Pin_12
 #define CONTROLSCK			GPIO_Pin_13
 #define CONTROLMI				GPIO_Pin_14
 #define CONTROLMO				GPIO_Pin_15
+/*****************************************
+
+	PC6~PC8用于产生驱动电机的PWM
+*****************************************/
+#define PWMTIMIO				GPIOC
+#define PWMTIMIO1				GPIO_Pin_6
+#define PWMTIMIO2				GPIO_Pin_7
+#define PWMTIMIO3				GPIO_Pin_8
+/*****************************************
+	PB0~1 用于接收传感器信号
+*****************************************/
+#define SENSORIO				GPIOC
+#define SENSORIN1				GPIO_Pin_0    //行走定位传感器
+#define SENSORIN2				GPIO_Pin_1		//高度传感器
+#define SENSORIN3				GPIO_Pin_2    //移动机械爪定位传感器外
+#define SENSORIN4				GPIO_Pin_3		//移动机械爪定位传感器内
+/*****************************************
+
+	PA9~PA10作为第二功能，USART1的发送和
+	接收引脚，作为测试输出使用,正式程序
+	中不启用该端口
+*****************************************/
+#define CK						GPIOA
+#define CK1TX					GPIO_Pin_9
+#define CK1RX					GPIO_Pin_10
 
 
 	 

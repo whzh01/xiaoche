@@ -13,9 +13,9 @@ History:
 V1.0: 	2015/05/16
 1、手柄解码，识别按键值，读取模拟值。       
 **********************************************************/	 
-#define DELAY_TIME  Delay_us(5); 
+#define DELAY_TIME  Delay_us(6); 
 u16 Handkey;	// 按键值读取，零时存储。
-u8	keyVal=0,angLX=0,angLY=0,angRX=0,angRY=0;
+u8	angLX=0,angLY=0,angRX=0,angRY=0;
 u8 Comd[2]={0x01,0x42};	//开始命令。请求数据
 u8 Data[9]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}; //数据存储数组
 u16 MASK[]={
@@ -118,10 +118,10 @@ void PS2_ReadData(void)
 
 //对读出来的PS2的数据进行处理,只处理按键部分  
 //只有一个按键按下时按下为0， 未按下为1
-void PS2_DataKey()
+u8 PS2_DataKey()
 {
 	u8 index;
-
+	u8 keyVal;
 	PS2_ClearData();
 	PS2_ReadData();
 
@@ -131,11 +131,11 @@ void PS2_DataKey()
 		if((Handkey&(1<<(MASK[index]-1)))==0)
 		{
 			keyVal =  index+1;
-			return ;
+			return keyVal;
 		}
 	}
 	keyVal =  0;          //没有任何按键按下
-	return;
+	return keyVal;
 }
 
 //得到一个摇杆的模拟量	 范围0~256
@@ -211,7 +211,7 @@ void PS2_TurnOnAnalogMode(void)
 	PS2_Cmd(0x01);  
 	PS2_Cmd(0x44);  
 	PS2_Cmd(0X00);
-	PS2_Cmd(0x00); //analog=0x01;digital=0x00  软件设置发送模式
+	PS2_Cmd(0x01); //analog=0x01;digital=0x00  软件设置发送模式
 	PS2_Cmd(0xEE); //Ox03锁存设置，即不可通过按键“MODE”设置模式。
 				   //0xEE不锁存软件设置，可通过按键“MODE”设置模式。
 	PS2_Cmd(0X00);

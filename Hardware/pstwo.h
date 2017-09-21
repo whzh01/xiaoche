@@ -111,7 +111,7 @@ void PS2_Init(void);
 u8 PS2_RedLight(void);   //判断是否为红灯模式
 void PS2_ReadData(void); //读手柄数据
 void PS2_Cmd(u8 CMD);		  //向手柄发送命令
-void PS2_DataKey(void);		  //按键值读取
+u8 PS2_DataKey(void);		  //按键值读取
 u8 PS2_AnologData(u8 button); //得到一个摇杆的模拟量
 void PS2_ClearData(void);	  //清除数据缓冲区
 void PS2_Vibration(u8 motor1, u8 motor2);//振动设置motor1  0xFF开，其他关，motor2  0x40~0xFF

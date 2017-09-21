@@ -13,8 +13,8 @@ void SysTickConfig(void);
 void Delay_ms(u16);
 void Delay_us(u16);
 void SysTick_Handler(void);
-
-	 
+void TIM4_IRQHandler(void);
+void TIM4_Config(void); 
 	 
 	 
 	 

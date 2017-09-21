@@ -3,37 +3,40 @@
 /*Define  ---------------------------------------------*/
 #define MOTORPERIOD		200-1
 #define MOTORPRE			72-1
-#define MOTORDUTY1			500
-#define MOTORDUTY2    100
-#define MOTORDUTY3    200
+#define MOTORDUTY1		0
+#define MOTORDUTY2    0
+#define MOTORDUTY3    0
 
 
 void MoveMotorForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN1);
 	GPIO_ResetBits(MOTORIO,MOTORIN2);
+	Delay_ms(10);
 }
 void MoveMotorBack()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN1);
 	GPIO_SetBits(MOTORIO,MOTORIN2);
+
 }
 void MoveMotorStop()
 {
-	SetMoveMotorSpeed(0);
-	Delay_ms(500);
 	GPIO_ResetBits(MOTORIO,MOTORIN1);
 	GPIO_ResetBits(MOTORIO,MOTORIN2);
+	Delay_ms(10);
 }
 void PullMotorForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN3);
 	GPIO_ResetBits(MOTORIO,MOTORIN4);
+	Delay_ms(10);
 }
 void PullMotorBack()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN3);
 	GPIO_SetBits(MOTORIO,MOTORIN4);
+	Delay_ms(10);
 }
 void PullMotorStop()
 {
@@ -44,11 +47,15 @@ void RollMotorForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN5);
 	GPIO_ResetBits(MOTORIO,MOTORIN6);
-}void RollMotorBack()
+	Delay_ms(10);
+}
+void RollMotorBack()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN5);
 	GPIO_SetBits(MOTORIO,MOTORIN6);
-}void RollMotorStop()
+	Delay_ms(10);
+}
+void RollMotorStop()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN5);
 	GPIO_ResetBits(MOTORIO,MOTORIN6);
@@ -102,6 +109,9 @@ void MotorConfig()
 	TIM_OC3Init(TIMMOTOR,&TIM_OCInitStructure);
 	TIM_Cmd(TIMMOTOR,ENABLE);
 	
+	MoveMotorStop();
+	PullMotorStop();
+	RollMotorStop();
 }
 
 

@@ -19,16 +19,46 @@
   ******************************************************************************
   */  
 
-/* Includes ------------------------------------------------------------------*/
+/* 头文件包含------------------------------------------------------------------*/
 #include <stdio.h>
 #include "userconfig.h"
 
+u8 EmerStop=0;//紧急停止状态位，所有电机
 
-/**
-  * @brief  Main program.
-  * @param  None
-  * @retval None
-  */
+void PrintConfig()
+{
+	GPIO_InitTypeDef 			GPIO_InitStructure;
+	USART_InitTypeDef			USART_InitStructure;
+	GPIO_InitStructure.GPIO_Pin =CK1RX |CK1TX;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA,&GPIO_InitStructure);
+	
+	
+	USART_InitStructure.USART_BaudRate = 115200;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode= USART_Mode_Tx |USART_Mode_Rx;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_Init(TESTUSART,&USART_InitStructure);
+	USART_Cmd(TESTUSART,ENABLE);
+
+}
+void Print(u16 text)
+{
+
+  USART_SendData(TESTUSART,text);
+//	for(unum=0;unum<4000 && !USART_GetFlagStatus(USARTCLAW,USART_FLAG_TC) ;unum++);
+
+}
+/*
+ *函数名：main
+ *描述：主程序
+ *输入：无
+ *输出：无
+ *调用：主程序调用
+ */
 int main(void)
 {
   /*!< At this stage the microcontroller clock setting is already configured, 
@@ -38,121 +68,113 @@ int main(void)
        system_stm32f10x.c file
      */     
 	
-	u8  i;
 	extern u8 keyVal,angLX,angLY,angRX,angRY;/**键值,四个模拟值, */
 	extern vu8 keyBit; /**键读取状态位*/
-	
+	//extern u8 signalCount1;
+	extern u8 signalMove,signalHeight;
+	u8 autodrive=0;
 	
 	RCCStart();
 	SysTickConfig();
+//	TIM4_Config();
+  PrintConfig();
 	AutoDriveConfig();
-	LEDInit();
+//	LEDInit();
 	NVICConfig();
-	SetMoveMotorSpeed(50);
-	SetPullMotorSpeed(50);
-	
+	SetPullMotorSpeed(180);
+/**
+ while(1)
+ {
+	 if(1==keyBit)
+	 {
+		PS2_DataKey();
+		 keyBit=0;
+	 }		 
+	 Print(keyVal);
+	 Delay_ms(100);
+ }
+ */
   while (1)
   {
-		/******************************
-		测试舵机的开闭
-		****************************** 
-		
-		USART_SendData(USARTCLAW,0x99);
-		ClawClose();
-		Delay_ms(1000);
-		Delay_ms(1000);
-		ClawOpen();
-		Delay_ms(1000);
-		Delay_ms(1000);
-		*************************/
-			if(1==keyBit)        //定时读取按键
+		if(autodrive==1)
+			MotorSensorJudge(signalMove);
+		else
+		{
+			PullMotorStop();
+			MoveMotorStop();
+			RollMotorStop();
+		}
+		if(1==keyBit)        //定时读取按键
+		{
+			keyVal = PS2_DataKey();	 //手柄按键捕获处理
+	//				PS2_DataKey();	 //手柄按键捕获处理
+//				if(!PS2_RedLight())
+//				{
+//					angLY = PS2_AnologData(PSS_LY);
+//					angLX = PS2_AnologData(PSS_LX);
+//					angRX = PS2_AnologData(PSS_RY);
+//					angRY = PS2_AnologData(PSS_RX);
+//				}
+				keyBit=0;		
+	//			Print(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));			
+		}		
+		if(keyVal!=0)                   //有按键按下
+		{
+			if(PSB_PINK == keyVal)
 			{
-					PS2_DataKey();	 //手柄按键捕获处理
-					if(!PS2_RedLight())
-					{
-						angLY = PS2_AnologData(PSS_LY);
-						angLX = PS2_AnologData(PSS_LX);
-						angRX = PS2_AnologData(PSS_RY);
-						angRY = PS2_AnologData(PSS_RX);	
-					}else
-					{
-						angLY = angLX=angRX = angRY=127;
-					}
-					keyBit=0;			
+				ClawClose();
 			}
-			
-			if(keyVal!=0)                   //有按键按下
+			else if(PSB_RED == keyVal)
 			{
-
-				if(PSB_PINK == keyVal)
-				{
-					ClawClose();
-				}
-				else if(PSB_RED == keyVal)
-				{
-					ClawOpen();
-
-				}
-				else if(PSB_PAD_UP == keyVal)
-				{
-					SetMoveMotorSpeed(80);
-					MoveMotorForward();
-					Delay_ms(100);
-					SetMoveMotorSpeed(0);
-				}else if(PSB_PAD_DOWN == keyVal)
-				{
-					SetMoveMotorSpeed(50);
-					MoveMotorBack();
-					Delay_ms(100);
-					SetMoveMotorSpeed(0);
-		
-				}else if(PSB_GREEN == keyVal)
-				{
-					SetPullMotorSpeed(50);
-					PullMotorForward();
-					Delay_ms(100);
-					SetPullMotorSpeed(0);
-		
-				}else if(PSB_BLUE == keyVal)
-				{
-					SetPullMotorSpeed(50);
-					PullMotorBack();
-					Delay_ms(100);
-					SetPullMotorSpeed(0);
-				}else 
-				{
-					
-				}
-		  }else
-			{
-				if(angLY-127>10)
-				{
-					SetMoveMotorSpeed((angLY-127)*100/127);
-					MoveMotorBack();
-					Delay_ms(100);
-					SetMoveMotorSpeed(0);
-				}else if(127-angLY>10)
-				{
-					SetMoveMotorSpeed((127-angLY)*100/127);
-					MoveMotorForward();
-					Delay_ms(100);
-					SetMoveMotorSpeed(0);
-				}else if(angRY-127>10)
-				{
-					SetPullMotorSpeed((angRY-127)*100/127);
-					PullMotorBack();
-					Delay_ms(100);
-					SetPullMotorSpeed(0);
-				}else if(127-angRY>10)
-				{
-					SetPullMotorSpeed((127-angRY)*100/127);
-					PullMotorForward();
-					Delay_ms(100);
-					SetPullMotorSpeed(0);
-				}else
-				{
-				}
+				ClawOpen();
 			}
+			else if(PSB_PAD_UP == keyVal)
+			{
+				SetMoveMotorSpeed(200);
+				MoveMotorForward();	
+				while(keyVal !=PSB_PAD_UP);
+				MoveMotorStop();
+			}else if(PSB_PAD_DOWN == keyVal)
+			{
+				SetMoveMotorSpeed(200);
+				MoveMotorBack();
+				Delay_ms(20);
+				MoveMotorStop();
+			}else if(PSB_GREEN == keyVal)
+			{
+				SetPullMotorSpeed(200);
+				PullMotorForward();
+				while(keyVal !=PSB_GREEN);				
+				PullMotorStop();
+			}else if(PSB_BLUE == keyVal)
+			{
+				SetPullMotorSpeed(200);
+				PullMotorBack();
+				while(keyVal !=PSB_BLUE);
+				PullMotorStop();
+			}else if(PSB_PAD_RIGHT == keyVal)
+			{
+				SetRollMotorSpeed(150);	
+				RollMotorForward();
+				while(keyVal !=PSB_PAD_RIGHT);
+				RollMotorStop();
+			}else if(PSB_PAD_LEFT == keyVal)
+			{
+				SetRollMotorSpeed(130);	
+				RollMotorBack();
+				while(keyVal !=PSB_PAD_LEFT);
+				RollMotorStop();
+			}else if(PSB_L1 == keyVal)
+			{
+					autodrive=1;
+			}else if(PSB_L2 == keyVal)
+			{
+					autodrive=0;
+			}
+		}else
+		{   
+    }
+		
   }
 }
 
