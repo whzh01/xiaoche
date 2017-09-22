@@ -11,8 +11,8 @@
 u8 signalMove=0,signalHeight=0;//存储行走传感器和高度传感器感应次数
 u8 validMove=1;   //行走传感器信号有效状态位，保证同一个位置只计数一次
 u8 validHeight=0;	//高度传感器信号有效状态位，保证同一个位置只计数一次
-u8 keyBit=0;
-u8 keyVal;
+u8 keyBit=0;			//定时读取遥控器信号状态位
+u8 keyVal;      //存储当前遥控信号值
 /**内部函数声明-----------------------------------------------------*/
 
 
@@ -55,6 +55,13 @@ void TIM2_IRQHandler()
 		{
 			npsc=0;
 			keyBit=1;		//定时信号，用于主程序中定时读取遥控器信号
+			keyVal = PS2_DataKey();	 //手柄按键捕获处理
+			if(PSB_L2 == keyVal)
+			{		
+				PullMotorStop();
+				MoveMotorStop();
+				RollMotorStop();
+			}
 		}else
 		{
 			npsc++;
@@ -161,16 +168,21 @@ void Action2(u8 h1,u8 h2)
 		RollMotorBack();
 		while(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));
 		RollMotorStop();
-		Delay_ms(1000);
-		Delay_ms(1000);
-		Delay_ms(1000);
+		Delay_ms(1000,0);
+	/**重新修正位置**/
+		RollMotorForward();
+		while(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));
+		RollMotorStop();
+		Delay_ms(1000,0);
+		Delay_ms(1000,0);
+		Delay_ms(1000,0);
 		PullMotorBack();
 		while(signalHeight <h1);
 		PullMotorStop();
 		ClawOpen();
 		SetPullMotorSpeed(80);
 		PullMotorForward();
-		Delay_ms(1000);
+		Delay_ms(1000,0);
 		SetPullMotorSpeed(200);
 		while(signalHeight<h2);
 		PullMotorStop();
@@ -268,7 +280,7 @@ void MotorSensorJudge(u8 count)
 			SetMoveMotorSpeed(200);
 			break;
 		case 6:
-			Delay_ms(850);
+			Delay_ms(850,0);
 			SetMoveMotorSpeed(60);
 			break;
 		case 7:
@@ -339,7 +351,7 @@ void MotorSensorJudge(u8 count)
 			PullMotorForward();
 			while(signalHeight<16);
 			PullMotorStop();
-			SetMoveMotorSpeed(60);
+			SetMoveMotorSpeed(90);
 			break;
 		case 25:
 			//重复信号7动作
@@ -348,6 +360,9 @@ void MotorSensorJudge(u8 count)
 			RollMotorBack();
 			while(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));
 			RollMotorStop();
+			Delay_ms(1000,0);
+			Delay_ms(1000,0);
+			Delay_ms(1000,0);
 			PullMotorBack();
 			while(signalHeight<17);
 			PullMotorStop();
@@ -374,8 +389,8 @@ void AutoDriveConfig()
 	SensorConfig();
 	PS2_Init();
 	PS2_SetInit();
-	Delay_ms(1000);
-	Delay_ms(1000);
+	Delay_ms(1000,0);
+	Delay_ms(1000,0);
 	SignalCheck();
 }
 

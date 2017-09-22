@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include "userconfig.h"
 
-u8 EmerStop=0;//紧急停止状态位，所有电机
 
 void PrintConfig()
 {
@@ -70,7 +69,6 @@ int main(void)
 	
 	extern u8 keyVal,angLX,angLY,angRX,angRY;/**键值,四个模拟值, */
 	extern vu8 keyBit; /**键读取状态位*/
-	//extern u8 signalCount1;
 	extern u8 signalMove,signalHeight;
 	u8 autodrive=0;
 	
@@ -82,43 +80,26 @@ int main(void)
 //	LEDInit();
 	NVICConfig();
 	SetPullMotorSpeed(180);
-/**
- while(1)
- {
-	 if(1==keyBit)
-	 {
-		PS2_DataKey();
-		 keyBit=0;
-	 }		 
-	 Print(keyVal);
-	 Delay_ms(100);
- }
- */
+
   while (1)
   {
 		if(autodrive==1)
 			MotorSensorJudge(signalMove);
-		else
-		{
-			PullMotorStop();
-			MoveMotorStop();
-			RollMotorStop();
-		}
-		if(1==keyBit)        //定时读取按键
-		{
-			keyVal = PS2_DataKey();	 //手柄按键捕获处理
-	//				PS2_DataKey();	 //手柄按键捕获处理
-//				if(!PS2_RedLight())
-//				{
-//					angLY = PS2_AnologData(PSS_LY);
-//					angLX = PS2_AnologData(PSS_LX);
-//					angRX = PS2_AnologData(PSS_RY);
-//					angRY = PS2_AnologData(PSS_RX);
-//				}
-				keyBit=0;		
-	//			Print(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));			
-		}		
-		if(keyVal!=0)                   //有按键按下
+		
+//		if(1==keyBit)        //定时读取按键
+//		{
+//			keyVal = PS2_DataKey();	 //手柄按键捕获处理
+//			if(!PS2_RedLight())
+//			{
+//				angLY = PS2_AnologData(PSS_LY);
+//				angLX = PS2_AnologData(PSS_LX);
+//				angRX = PS2_AnologData(PSS_RY);
+//				angRY = PS2_AnologData(PSS_RX);
+//			}
+//			keyBit=0;		
+//	//	Print(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));			
+//		}		
+		if(keyVal!=0)      //有按键按下
 		{
 			if(PSB_PINK == keyVal)
 			{
@@ -138,7 +119,7 @@ int main(void)
 			{
 				SetMoveMotorSpeed(200);
 				MoveMotorBack();
-				Delay_ms(20);
+				Delay_ms(20,0);
 				MoveMotorStop();
 			}else if(PSB_GREEN == keyVal)
 			{
@@ -166,9 +147,11 @@ int main(void)
 				RollMotorStop();
 			}else if(PSB_L1 == keyVal)
 			{
+				//自动行驶
 					autodrive=1;
 			}else if(PSB_L2 == keyVal)
 			{
+				//停止自动行驶
 					autodrive=0;
 			}
 		}else

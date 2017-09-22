@@ -10,8 +10,8 @@
 #include "stm32f10x.h"
 
 void SysTickConfig(void);
-void Delay_ms(u16);
-void Delay_us(u16);
+void Delay_ms(u16,u8 numT);
+void Delay_us(u16,u8 numT);
 void SysTick_Handler(void);
 void TIM4_IRQHandler(void);
 void TIM4_Config(void); 

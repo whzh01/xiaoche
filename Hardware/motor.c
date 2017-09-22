@@ -12,7 +12,7 @@ void MoveMotorForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN1);
 	GPIO_ResetBits(MOTORIO,MOTORIN2);
-	Delay_ms(10);
+
 }
 void MoveMotorBack()
 {
@@ -24,19 +24,19 @@ void MoveMotorStop()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN1);
 	GPIO_ResetBits(MOTORIO,MOTORIN2);
-	Delay_ms(10);
+
 }
 void PullMotorForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN3);
 	GPIO_ResetBits(MOTORIO,MOTORIN4);
-	Delay_ms(10);
+
 }
 void PullMotorBack()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN3);
 	GPIO_SetBits(MOTORIO,MOTORIN4);
-	Delay_ms(10);
+
 }
 void PullMotorStop()
 {
@@ -47,13 +47,13 @@ void RollMotorForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN5);
 	GPIO_ResetBits(MOTORIO,MOTORIN6);
-	Delay_ms(10);
+
 }
 void RollMotorBack()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN5);
 	GPIO_SetBits(MOTORIO,MOTORIN6);
-	Delay_ms(10);
+
 }
 void RollMotorStop()
 {
