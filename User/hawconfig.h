@@ -11,7 +11,7 @@
 
 void LEDInit(void);	 
 void RCCStart(void);
-void NVICConfig(void);
+void NVIC_Config(void);
 void KeyConfig(void);	 
 	 
 #ifdef __cplusplus

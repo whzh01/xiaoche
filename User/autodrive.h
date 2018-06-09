@@ -18,7 +18,7 @@ void MotorSensorJudge(u8 count);
 void MotorSensorCount(void);
 void PullSensorJudge(u8 count);
 void PullSensorCount(void);
-
+void EmStop(void);
 void SignalCheck(void);
 
 	 

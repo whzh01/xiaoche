@@ -24,7 +24,7 @@ void RCCStart()
 
 }
 
-void NVICConfig()
+void NVIC_Config()
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
@@ -41,9 +41,12 @@ void NVICConfig()
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority=1;
 	NVIC_Init(&NVIC_InitStructure);
 		
+	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority=1;
+	NVIC_Init(&NVIC_InitStructure);
 		
-	
-	
 }
 
 

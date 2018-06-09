@@ -43,23 +43,39 @@ void PullMotorStop()
 	GPIO_ResetBits(MOTORIO,MOTORIN3);
 	GPIO_ResetBits(MOTORIO,MOTORIN4);
 }
-void RollMotorForward()
+void RollMotorBForward()
 {
 	GPIO_SetBits(MOTORIO,MOTORIN5);
 	GPIO_ResetBits(MOTORIO,MOTORIN6);
 
 }
-void RollMotorBack()
+void RollMotorBBack()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN5);
 	GPIO_SetBits(MOTORIO,MOTORIN6);
 
 }
-void RollMotorStop()
+void RollMotorBStop()
 {
 	GPIO_ResetBits(MOTORIO,MOTORIN5);
 	GPIO_ResetBits(MOTORIO,MOTORIN6);
 }
+void RollMotorAForward()
+{
+	GPIO_SetBits(MOTORIO,MOTORIN7);
+	GPIO_ResetBits(MOTORIO,MOTORIN8);
+}
+void RollMotorABack()
+{
+	GPIO_ResetBits(MOTORIO,MOTORIN7);
+	GPIO_SetBits(MOTORIO,MOTORIN8);
+}
+void RollMotorAStop()
+{
+	GPIO_ResetBits(MOTORIO,MOTORIN7);
+	GPIO_ResetBits(MOTORIO,MOTORIN8);
+}
+
 void SetPullMotorSpeed(u16 speed)
 {
 	TIMMOTOR->CCR2=speed;
@@ -86,7 +102,7 @@ void MotorConfig()
 	GPIO_Init(PWMTIMIO,&GPIO_InitStructure);
 	GPIO_PinRemapConfig(GPIO_FullRemap_TIM3,ENABLE);
 	/***************电机正反转输出IO初始化**************************/
-	GPIO_InitStructure.GPIO_Pin = MOTORIN1 |MOTORIN2 |MOTORIN3 |MOTORIN4 |MOTORIN5 |MOTORIN6;
+	GPIO_InitStructure.GPIO_Pin = MOTORIN1 |MOTORIN2 |MOTORIN3 |MOTORIN4 |MOTORIN5 |MOTORIN6 |MOTORIN7 |MOTORIN8;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(MOTORIO,&GPIO_InitStructure);
@@ -109,9 +125,6 @@ void MotorConfig()
 	TIM_OC3Init(TIMMOTOR,&TIM_OCInitStructure);
 	TIM_Cmd(TIMMOTOR,ENABLE);
 	
-	MoveMotorStop();
-	PullMotorStop();
-	RollMotorStop();
 }
 
 

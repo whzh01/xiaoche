@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include "userconfig.h"
 
+vu8 autodrive=0;
 
 void PrintConfig()
 {
@@ -67,28 +68,29 @@ int main(void)
        system_stm32f10x.c file
      */     
 	
-	extern u8 keyVal,angLX,angLY,angRX,angRY;/**键值,四个模拟值, */
+	extern u8 angLX,angLY,angRX,angRY;/**键值,四个模拟值, */
 	extern vu8 keyBit; /**键读取状态位*/
 	extern u8 signalMove,signalHeight;
-	u8 autodrive=0;
+	extern u8 keyVal;
+
 	
 	RCCStart();
-	SysTickConfig();
-//	TIM4_Config();
+	Delay_Config();
+	NVIC_Config();
   PrintConfig();
 	AutoDriveConfig();
 //	LEDInit();
-	NVICConfig();
-	SetPullMotorSpeed(180);
+	SetPullMotorSpeed(200);
+	SetRollMotorSpeed(160);
 
   while (1)
   {
-		if(autodrive==1)
-			MotorSensorJudge(signalMove);
 		
-//		if(1==keyBit)        //定时读取按键
-//		{
-//			keyVal = PS2_DataKey();	 //手柄按键捕获处理
+		if(autodrive==1) MotorSensorJudge(signalMove);
+		
+		if(1==keyBit)        //定时读取按键
+		{
+//		keyVal = PS2_DataKey();	 //手柄按键捕获处理
 //			if(!PS2_RedLight())
 //			{
 //				angLY = PS2_AnologData(PSS_LY);
@@ -96,9 +98,10 @@ int main(void)
 //				angRX = PS2_AnologData(PSS_RY);
 //				angRY = PS2_AnologData(PSS_RX);
 //			}
-//			keyBit=0;		
-//	//	Print(GPIO_ReadInputDataBit(SENSORIO,SENSORIN3));			
-//		}		
+				keyBit=0;		
+		//		Print(keyVal);			
+		}		
+		
 		if(keyVal!=0)      //有按键按下
 		{
 			if(PSB_PINK == keyVal)
@@ -111,53 +114,48 @@ int main(void)
 			}
 			else if(PSB_PAD_UP == keyVal)
 			{
-				SetMoveMotorSpeed(200);
+				SetMoveMotorSpeed(100);
 				MoveMotorForward();	
-				while(keyVal !=PSB_PAD_UP);
+				while(keyVal ==PSB_PAD_UP);
 				MoveMotorStop();
 			}else if(PSB_PAD_DOWN == keyVal)
 			{
-				SetMoveMotorSpeed(200);
+				SetMoveMotorSpeed(100);
 				MoveMotorBack();
-				Delay_ms(20,0);
+				while(keyVal ==PSB_PAD_DOWN);
 				MoveMotorStop();
 			}else if(PSB_GREEN == keyVal)
 			{
 				SetPullMotorSpeed(200);
 				PullMotorForward();
-				while(keyVal !=PSB_GREEN);				
+				while(keyVal ==PSB_GREEN);				
 				PullMotorStop();
 			}else if(PSB_BLUE == keyVal)
 			{
 				SetPullMotorSpeed(200);
 				PullMotorBack();
-				while(keyVal !=PSB_BLUE);
+				while(keyVal ==PSB_BLUE);
 				PullMotorStop();
 			}else if(PSB_PAD_RIGHT == keyVal)
 			{
 				SetRollMotorSpeed(150);	
-				RollMotorForward();
-				while(keyVal !=PSB_PAD_RIGHT);
-				RollMotorStop();
+				RollMotorAForward();
+				RollMotorBForward();
+				while(keyVal ==PSB_PAD_RIGHT);
+				RollMotorAStop();
+				RollMotorBStop();
 			}else if(PSB_PAD_LEFT == keyVal)
 			{
-				SetRollMotorSpeed(130);	
-				RollMotorBack();
-				while(keyVal !=PSB_PAD_LEFT);
-				RollMotorStop();
-			}else if(PSB_L1 == keyVal)
-			{
-				//自动行驶
-					autodrive=1;
-			}else if(PSB_L2 == keyVal)
-			{
-				//停止自动行驶
-					autodrive=0;
-			}
+				SetRollMotorSpeed(150);	
+				RollMotorABack();
+				RollMotorBBack();
+				while(keyVal ==PSB_PAD_LEFT);
+				RollMotorAStop();
+				RollMotorBStop();
+			}else {}
 		}else
 		{   
     }
-		
   }
 }
 

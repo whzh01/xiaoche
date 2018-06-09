@@ -9,12 +9,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 
-void SysTickConfig(void);
-void Delay_ms(u16,u8 numT);
-void Delay_us(u16,u8 numT);
-void SysTick_Handler(void);
+void Delay_Config(void);
+void Delay_ms(u16 count,u8 numT);
+void Delay_us(u16 nus);
 void TIM4_IRQHandler(void);
-void TIM4_Config(void); 
+ 
 	 
 	 
 	 

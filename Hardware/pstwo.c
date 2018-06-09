@@ -14,7 +14,7 @@ V1.0: 	2015/05/16
 1、手柄解码，识别按键值，读取模拟值。       
 **********************************************************/	 
 #define DELAY_TIME  Delay_us(6)
-#define Delay_us(a)	Delay_us(a,1)  //加入计时缓冲区
+//#define Delay_us(a)	Delay_us(a,1)  //加入计时缓冲区
 u16 Handkey;	// 按键值读取，零时存储。
 u8	angLX=0,angLY=0,angRX=0,angRY=0;
 u8 Comd[2]={0x01,0x42};	//开始命令。请求数据
